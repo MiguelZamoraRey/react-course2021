@@ -6,6 +6,7 @@ import "./styles/Badges.css";
 
 import BadgesList from '../components/BadgesList';
 import PageLoading from '../components/PageLoading';
+import MiniLoader from '../components/MiniLoader';
 import PageError from '../components/PageError';
 
 import api from '../api.js';
@@ -23,7 +24,12 @@ class Badges extends React.Component {
 
     componentDidMount() {
         console.log("3.Didmount")
-        this.fetchData()
+        this.fetchData();
+
+        //TECNICA POLLING --> para evitar el uso de websockets si la carga no es mucha
+        //  utilizamos esta tecnica para que todo el mundo pueda ver resultados en 
+        //  tiempo real, consiste en hacer get continuamente segun un intervalo
+        this.intervalId = setInterval(this.fetchData,5000);
     }
 
     fetchData = async () => {
@@ -46,12 +52,13 @@ class Badges extends React.Component {
 
     componentWillUnmount(){
         console.log("6.willUnmount");
+        clearInterval(this.intervalId);
     }
 
     render() {
         console.log("2/4.render");
 
-        if(this.state.loading === true){
+        if(this.state.loading === true && this.state.data === undefined){
             return <PageLoading/>
         }
 
@@ -74,12 +81,8 @@ class Badges extends React.Component {
                             New Badge
                         </Link>
                     </div>
-                    
-                    <div className="Badges__list">
-                        <div className="Badges__container">
-                           <BadgesList badges={this.state.data}/>
-                        </div>
-                    </div>
+                    <BadgesList badges={this.state.data}/>
+                    {this.state.loading && <MiniLoader/>}
                 </div>
             </React.Fragment>
         );

@@ -1,9 +1,9 @@
 import React from 'react';
 
 import {Link} from 'react-router-dom';
-import Gravatar from './Gravatar';
+import BadgesListItem from './BadgesListItem';
 
-import "./styles/BadgesList.css";
+import "./styles/BadgesListItem.css";
 
 class BadgesList extends React.Component {
     render() {
@@ -16,25 +16,21 @@ class BadgesList extends React.Component {
             )
         } else {
             return (
-                <ul className="list-unstyled">
-                    {this.props.badges.map( (badge) => {
-                        return (
-                            <li key={badge.id} className="BadgesListItem">
-                                <Gravatar
-                                    className="BadgesListItem__avatar"
-                                    email={badge.email}
-                                />
-                                <div>
-                                    <div><strong>{badge.firstName} {badge.lastName}</strong></div>
-                                    <div className="Twitter__name">
-                                    <span className="Twitter__logo"></span>@{badge.twitter}
-                                    </div>
-                                    <div>{badge.jobTitle}</div>
-                                </div>
-                            </li>
-                        )
-                    })}
-                </ul>
+                <div className="Badges__list">
+                    <div className="Badges__container">
+                        <ul className="list-unstyled">
+                            {this.props.badges.map( (badge) => {
+                                return (
+                                    <li key={badge.id}>
+                                        <Link className="text-reset text-decoration-none" to={`/badges/${badge.id}`}>
+                                            <BadgesListItem badge={badge}/>
+                                        </Link>
+                                    </li>
+                                )
+                            })}
+                        </ul>
+                    </div>
+                </div>
             );
         }
     }
