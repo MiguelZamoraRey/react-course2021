@@ -1,46 +1,14 @@
 import React from 'react';
+
 import { Link } from 'react-router-dom';
 
 import './styles/BadgeDetails.css';
 import confLogo from '../images/platziconf-logo.svg';
-import PageLoading from '../components/PageLoading';
-import PageError from '../components/PageError';
 import Badge from '../components/Badge';
-import api from '../api';
+import DeleteBadgeModal from '../components/DeleteBadgeModal';
 
-class BadgeDetails extends React.Component {
-  state = {
-    loading: true,
-    error: null,
-    data: undefined,
-  };
-
-  componentDidMount() {
-    this.fetchData();
-  }
-
-  fetchData = async () => {
-    this.setState({ loading: true, error: null });
-
-    try {
-      const data = await api.badges.read(this.props.match.params.badgeId);
-      this.setState({ loading: false, data: data });
-    } catch (error) {
-      this.setState({ loading: false, error: error });
-    }
-  };
-
-  render() {
-    if (this.state.loading) {
-      return <PageLoading />;
-    }
-
-    if (this.state.error) {
-      return <PageError error={this.state.error} />;
-    }
-
-    const badge = this.state.data;
-
+function BadgeDetails(props) {
+    const badge = props.badge;
     return (
       <div>
         <div className="BadgeDetails__hero">
@@ -82,7 +50,12 @@ class BadgeDetails extends React.Component {
                 </div>
 
                 <div>
-                  <button className="btn btn-danger">Delete</button>
+                    <button onClick={props.onOpenModal} className="btn btn-danger">Delete</button>
+                    <DeleteBadgeModal 
+                        isOpen={props.modalIsOpen} 
+                        onClose={props.onCloseModal}
+                        onDeleteBadge={props.onDeleteBadge}
+                    />
                 </div>
               </div>
             </div>
@@ -90,7 +63,6 @@ class BadgeDetails extends React.Component {
         </div>
       </div>
     );
-  }
 }
 
 export default BadgeDetails;
